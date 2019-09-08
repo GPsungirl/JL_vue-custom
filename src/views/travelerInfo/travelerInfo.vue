@@ -9,6 +9,19 @@
                 <el-form-item v-if="roleId != 10" label="所属机构" prop="agent_name" >
                     <el-input v-model="queryForm.agent_name"  placeholder="请输入所属机构" class="wid_140"></el-input>
                 </el-form-item>
+                <!-- 校园代理 -->
+                <el-form-item label="校园代理" label-width="68px" prop="campus_agent">
+                    <el-select v-model="queryForm.campus_agent"
+                        class="wid_140"
+                        placeholder="选选择校园代理"
+                        >
+                        <el-option v-for="(item, index) in queryForm.campus_agents"
+                            :key="index"
+                            :label=" item.txt "
+                            :value=" item.id ">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                 <!-- 现居住地 -->
                 <!-- ******区代理 不需要所属机构 现居住地查询 -->
                 <!-- <el-form-item v-if="roleId != 10" label="现居住地" >
@@ -113,10 +126,10 @@
                 <el-table-column prop="birthday" label="出生日期" show-overflow-tooltip width="" >
                 </el-table-column>
                 <!-- ****区域代理10 不显示所属机构 -->
-                <el-table-column v-if="roleId != 10" prop="" show-overflow-tooltip label="所属机构" width="">
-                    <template slot-scope="scope">
+                <el-table-column v-if="roleId != 10" prop="agent_name" show-overflow-tooltip label="所属机构" width="">
+                    <!-- <template slot-scope="scope">
                         <el-button @click="handle_agent_name(scope.row)" type="text" size="small">{{ scope.row.agent_name }}</el-button>
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                     prop=""
@@ -690,6 +703,18 @@ export default {
                 province_param:'',//作为收集参数
                 city_param: '',   //作为收集参数
 
+                // 校园代理
+                campus_agents:[
+                  {
+                    id:1,
+                    txt:'否'
+                  },
+                  {
+                    id:2,
+                    txt:'是'
+                  }
+                ],
+                campus_agent:'',
 
             },
             // 详情
@@ -942,6 +967,8 @@ export default {
 
                     province_code:this.queryForm.province_code,
                     city_code:this.queryForm.city_code,
+                    // 校园代理
+                    campus_agent:this.queryForm.campus_agent,
 
                }
             }

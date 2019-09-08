@@ -56,22 +56,25 @@
             <el-table :data="tableData" v-loading="tableLoading" border stripe style="width: 100%">
                 <el-table-column prop="customid" label="用户ID" width="" >
                 </el-table-column>
-                <el-table-column prop="custom_name" label="用户姓名" width="">
+                <el-table-column prop="custom_name" label="用户姓名" width="78px">
                 </el-table-column>
                 <!-- 用户电话 -->
-                <el-table-column prop="custom_phone" label="用户电话" width="">
+                <el-table-column prop="custom_phone" label="用户电话" width="110px">
                 </el-table-column>
                 <!--出行项目 1晨光出行2暖阳午后3星空夜景 -->
-                <el-table-column prop="travel_projects" label="出行项目" width="">
-                    <template slot-scope="scope">
+                <el-table-column prop="travel_projects" label="出行项目" width="78px">
+                    <!-- <template slot-scope="scope">
                         <span v-if="scope.row.travel_projects == 1">晨光出行</span>
                         <span v-else-if="scope.row.travel_projects == 2">暖阳午后</span>
                         <span v-else-if="scope.row.travel_projects == 3">星空夜景</span>
-                    </template>
+                    </template> -->
+                </el-table-column>
+                <!-- 集合地点 -->
+                <el-table-column prop="meet_address" show-overflow-tooltip label="集合地点" width="">
                 </el-table-column>
                 <el-table-column prop="traveler_customid" label="向导ID" width="80px">
                 </el-table-column>
-                <el-table-column prop="traveler_custom_nickname" label="向导昵称" width="">
+                <el-table-column prop="traveler_custom_nickname" label="向导昵称" width="78px">
                 </el-table-column>
                 <!-- 区代理不显示 所属机构 -->
                 <el-table-column v-if="roleId != 10" prop="agentName" label="所属机构" width="">
@@ -91,9 +94,9 @@
                         <span v-else-if="scope.row.order_status == 7">订单</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="custom_evaluate" label="对用户评价" width="">
+                <el-table-column prop="custom_evaluate" show-overflow-tooltip label="对用户评价" width="">
                 </el-table-column>
-
+                
             </el-table>
             <!-- 分页 -->
             <div class="block mar_t10">

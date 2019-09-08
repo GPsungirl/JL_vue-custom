@@ -105,7 +105,7 @@
                 </el-table-column>
                 <el-table-column prop="" label="工作时长" width="">
                     <template slot-scope="scope">
-                        <span>{{ parseInt(scope.row.live_duration_month / 3600) +'小时'}}</span>
+                        <span>{{ Math.round(scope.row.live_duration_month / 60) +'分钟'}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="" label="操作" width="">

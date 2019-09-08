@@ -994,6 +994,10 @@ export default {
                     // 分页总数
                     this.pageTotal = res.data.data.page.pageTotal;
                     this.tableLoading = false
+                }else{
+                  this.tableLoading = false
+                  this.m_message(res.data.msg, 'warning')
+
                 }
             }).catch(err=>{
 

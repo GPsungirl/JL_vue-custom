@@ -580,8 +580,25 @@
                 <el-form-item label="出行分成" prop="profit_account_rate">
                     <el-input v-model.number="modi_rate_form.profit_account_rate" placeholder="出行分成" class="wid_181"></el-input>%
                 </el-form-item>
-            </el-form>
 
+            </el-form>
+            <!-- 审核拒绝原因 -->
+            <el-form :model="modi_rate_form2" :rules="modi_rate_rules2" ref="modi_rate_form2"  class="demo-ruleForm valid_form" >
+              <!-- 审核拒绝原因 -->
+                <h3 class="rate_title">审核拒绝原因</h3>
+                <el-form-item label="拒绝原因"  prop="refusedList">
+                    <el-select v-model="modi_rate_form2.refusedList"
+                        class="wid_181"
+                        placeholder="选择审核拒绝原因"
+                        >
+                        <el-option v-for="(item, index) in modi_rate_form2.refusedLists"
+                            :key="index"
+                            :label=" item "
+                            :value=" item">
+                        </el-option>
+                    </el-select>
+              </el-form-item>
+            </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="modi_rate_dialogVisible = false" size="mini">关 闭</el-button>
                 <el-button type="primary"  @click="save_check_ok" size="mini" >审核通过</el-button>
@@ -877,6 +894,7 @@ export default {
               ],
               traveler_type:0,
               agentid:'',
+
             },
             modi_rate_rules:{
                 // 贝壳分成
@@ -899,7 +917,17 @@ export default {
                     { required: true, validator:validRate15, trigger: 'blur' },
                     { type: 'number', message: '出行分成必须为数字'}
                 ],
+
             },
+            // 审核拒绝原因
+            modi_rate_form2:{
+              // 审核拒绝原因
+              refusedLists:[],
+              refusedList:'',
+            },
+            modi_rate_rules2:{
+              refusedList:[{ required: true, message: '请选择审核拒绝原因', trigger:'change'}],
+            }
         }
     },
     created(){
@@ -1238,11 +1266,16 @@ export default {
                 customid:row.customid
               }
             }
+            let promise1 = this.$http.post(`${ commonUrl.baseUrl }/travelerInfo/selectTravelerInfo`, param)
+            let promise2 = this.$http.post(`${ commonUrl.baseUrl }/remarkRefusedCause/selectRefusedList`,{data:{}})
             this.modi_rate_loading = true
-            this.$http.post(`${ commonUrl.baseUrl }/travelerInfo/selectTravelerInfo`, param).then(res=>{
-              if(res.data.code == '0000'){
+            Promise.all([promise1, promise2]).then(res=>{
+              console.log(res)
+              let [res1, res2] = res
+              //
+              if(res1.data.code == '0000'){
                 // 判断 区代 的贝壳 出行分成是不是空,空则取市代否则取区代
-                let result = res.data.data.travelerInfo
+                let result = res1.data.data.travelerInfo
                 if(result.area_account_rate == null && result.area_virtual_rate == null){
                   this.limit_virtual_rate = result.city_virtual_rate
                   this.limit_account_rate = result.city_account_rate
@@ -1252,8 +1285,21 @@ export default {
                 }
                 // console.log(res)
                 this.modi_rate_loading = false
+              }else{
+
               }
+              // 拒绝原因数据
+              if(res2.data.code == '0000'){
+                let result = res2.data.data.remarkRefusedCauseList
+                for(let item of result){
+                  this.modi_rate_form2.refusedLists.push(item.refused_cause)
+                }
+
+              }
+
             }).catch(err=>{})
+
+
 
         },
         // 保存审核通过
@@ -1292,8 +1338,9 @@ export default {
         },
         // 保存审核拒绝
         save_check_no(){
-
-            let param = {
+            // 先判断 是否选了
+            if(this.m_valid_addForm('modi_rate_form2')){
+              let param = {
                 data:{
                     account_rate:this.modi_rate_form.account_rate,
                     virtual_rate:this.modi_rate_form.virtual_rate,
@@ -1303,24 +1350,30 @@ export default {
                     traveler_status:2,
                     traveler_type:this.modi_rate_form.traveler_type,
                     travelerid:this.modi_rate_form.travelerid,
+
+                    //审核拒绝原因
+                    refused_cause:this.modi_rate_form2.refusedList
                 }
+              }
+              this.modi_rate_loading = true
+              this.$http.post(`${ commonUrl.baseUrl }/travelerInfo/checkTravelerInfo`, param).then(res=>{
+                  if(res.data.code == '0000'){
+                      this.modi_rate_loading = false
+                      this.modi_rate_dialogVisible = false
+                      // 提示
+                      this.m_message(res.data.msg, 'success')
+                      // 刷新主页面
+                      this.handle_refresh();
+
+                  }else{
+                      this.m_message(res.data.msg, 'warning')
+                      this.modi_rate_loading = false
+                      this.modi_rate_dialogVisible = false
+                      // 刷新主页面
+                      this.handle_refresh();
+                  }
+              }).catch(err=>{})
             }
-            this.modi_rate_loading = true
-            this.$http.post(`${ commonUrl.baseUrl }/travelerInfo/checkTravelerInfo`, param).then(res=>{
-                if(res.data.code == '0000'){
-                    this.modi_rate_loading = false
-                    this.modi_rate_dialogVisible = false
-                    // 提示
-                    this.m_message(res.data.msg, 'success')
-                    // 刷新主页面
-                    this.handle_refresh();
-
-                }else{
-                    this.m_message(res.data.msg, 'warning')
-                    this.modi_rate_loading = false
-                }
-            }).catch(err=>{})
-
         },
         // 省份change事件
         changeOption_province(e){

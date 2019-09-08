@@ -221,8 +221,12 @@ body .el-table colgroup.gutter {
 }
 .pp_label{
   font-size: 14px;
-  
+
 }
 .mar_r10{
   margin-right:10px;
+}
+.font12{
+  margin-left:4px;
+  font-size:12px;
 }
