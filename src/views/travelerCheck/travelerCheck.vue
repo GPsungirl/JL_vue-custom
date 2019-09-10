@@ -1291,7 +1291,11 @@ export default {
               // 拒绝原因数据
               if(res2.data.code == '0000'){
                 let result = res2.data.data.remarkRefusedCauseList
+                // 先清空
+                this.modi_rate_form2.refusedLists = []
                 for(let item of result){
+                  // 先清空
+
                   this.modi_rate_form2.refusedLists.push(item.refused_cause)
                 }
 
