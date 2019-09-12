@@ -63,6 +63,7 @@
 import { mapGetters } from "vuex";
 import commonUrl from "../../utils/common";
 import qs from "qs";
+import { setTimeout } from 'timers';
 export default {
   name: "Dashboard",
   data() {
@@ -118,7 +119,13 @@ export default {
         .catch(err => {});
     },
     // 获取昨日收益 上月收益
-    getEarnings(loading) {
+    getEarnings() {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       // 昨日收益
       let _param1 = {
         data: {
@@ -143,11 +150,11 @@ export default {
         _param2
       );
 
+
       Promise.all([_promise1, _promise2])
         .then(res => {
           let [res1, res2] = res;
           console.log(res);
-
           // 昨日收益
           if (res1.data.code == "0000") {
             let result = res1.data.data;
@@ -159,8 +166,8 @@ export default {
               this.yesterday_accountamount =
                 result.agentAccountEarnings.amount / 100 + "元";
             }
-          } else {
-            this.m_message(res1.data.data.msg, "warning");
+          }else{
+            setTimeout(()=>{this.m_message(res1.data.msg, "warning");},1)
           }
           console.log(res2);
           // 上月收益
@@ -168,11 +175,11 @@ export default {
             let result = res2.data.data.agentAccount
             this.lastMonth_virtualamount = result.virtual_month_total + '贝壳'
             this.lastMonth_accountamount = result.account_month_total / 100 + '元'
-            
-          } else {
-            this.m_message(res2.data.msg, "warning");
+
+          }else{
+             setTimeout(()=>{this.m_message(res2.data.msg, "warning");},1)
           }
-          console.log(res);
+
           loading.close();
         })
         .catch(err => {});
