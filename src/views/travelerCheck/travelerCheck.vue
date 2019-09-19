@@ -130,7 +130,7 @@
                         <span v-if="scope.row.profession_type == 0">其他</span>
                         <span v-else-if="scope.row.profession_type == 1">学生</span>
                         <span v-else-if="scope.row.profession_type == 2">都市白领</span>
-                        <span v-else-if="scope.row.profession_type == 3">向导</span>
+                        <span v-else-if="scope.row.profession_type == 3">导游</span>
                         <span v-else-if="scope.row.profession_type == 4">自由职业</span>
                     </template>
                 </el-table-column>
@@ -304,7 +304,8 @@
                             fit="contain">
                         </el-image>
                     </el-col>
-                    <el-col :span="8">
+                    <!-- 学生证 或者导游证 -->
+                    <el-col :span="8" v-if="is_student_guider">
                         <span class="demonstration">{{ detail_form.profession_name }}</span>
                         <el-image
                             style="width: 200px; height: 100px"
@@ -665,6 +666,8 @@ export default {
             idcard_back_url_srcList:[],
             idcard_front_url_srcList:[],
             profession_photo_url_srcList:[],
+            // 判断是否是学生或者导游 是则显示否则取消
+            is_student_guider:false,
             // 地图
             districtSearch:'',
             // 主列表
@@ -1177,77 +1180,88 @@ export default {
         },
         // 详情操作
         handle_detail(row){
+          // 清空一下 预览图片
+          this.idcard_back_url_srcList = []
+          this.idcard_front_url_srcList=[]
+          this.profession_photo_url_srcList=[]
 
-            this.detail_dialogVisible = true
-            this.detail_loading = true
-            this.$http.post(`${ commonUrl.baseUrl }/travelerInfo/selectTravelerInfo`, {data:{customid:row.customid}}).then(res=>{
-                if(res.data.code == '0000'){
+          this.detail_dialogVisible = true
+          this.detail_loading = true
+          this.$http.post(`${ commonUrl.baseUrl }/travelerInfo/selectTravelerInfo`, {data:{customid:row.customid}}).then(res=>{
+            if(res.data.code == '0000'){
 
-                    let result = res.data.data.travelerInfo
-                    // console.log(result)
-                    // 向导姓名
-                    this.detail_form.name = result.name
-                    // 向导ID
-                    this.detail_form.customid = result.customid
-                    // 所属机构
-                    this.detail_form.agent_name = result.agent_name
-                    // 上级ID
-                    this.detail_form.up_customid = result.up_customid
-                    // 上级姓名
-                    this.detail_form.up_name = result.up_name
-                    // 民族 性别  居住地  职业 详细地址 身高 体重 手机号 微信号 陌陌号  出生日期
-                    this.detail_form.traveler_native = result.traveler_native
-                    this.detail_form.sex = result.sex == '01' ?'男' :'女'
-                    this.detail_form.juzhudi = result.province +  result.city
-                    // 判断职业
-                    // '职业类别 0其他 1学生 2都市白领 3导游 4自由职业
-                    let  _profession = '';
-                    switch(result.profession_type){
-                        case 0:
-                            _profession = '其他';
-                            break;
-                        case 1:
-                            _profession = '学生';
-                            break;
-                        case 2:
-                            _profession = '都市白领';
-                            break;
-                        case 3:
-                            _profession = '导游';
-                            break;
-                        case 4:
-                            _profession = '自由职业';
-                            break;
-                    }
-                    this.detail_form.profession = _profession
-                    this.detail_form.address = result.address
-                    this.detail_form.tall = result.tall + 'cm'
-                    this.detail_form.weight = result.weight + 'kg'
-                    this.detail_form.phone  = result.phone
-                    this.detail_form.webchat = result.webchat
-                    this.detail_form.momo = result.momo
-                    this.detail_form.birthday = result.birthday
-                    // 身份证号
-                    this.detail_form.identity_no = result.identity_no
-                    this.detail_form.idcard_back_url = result.idcard_back_url
-                    this.detail_form.idcard_front_url = result.idcard_front_url
-                    //  职业证类型 （根据类型判名称）
-                    this.detail_form.profession_no = result.profession_no,
-                    this.detail_form.profession_name = result.profession_type == 3 ? '导游证':'学生证'
-                    this.detail_form.profession_photo_url = result.profession_photo_url
-
-                    // 大图预览
-                    this.idcard_back_url_srcList.push(result.idcard_back_url),
-                    this.idcard_front_url_srcList.push(result.idcard_front_url)
-                    this.profession_photo_url_srcList.push(result.profession_photo_url)
-
-                    // 贝壳分成
-                    this.detail_form.virtual_rate = result.virtual_rate
-                    // 出行分成
-                    this.detail_form.account_rate = result.account_rate
-                    this.detail_loading = false
+                let result = res.data.data.travelerInfo
+                // console.log(result)
+                // 向导姓名
+                this.detail_form.name = result.name
+                // 向导ID
+                this.detail_form.customid = result.customid
+                // 所属机构
+                this.detail_form.agent_name = result.agent_name
+                // 上级ID
+                this.detail_form.up_customid = result.up_customid
+                // 上级姓名
+                this.detail_form.up_name = result.up_name
+                // 民族 性别  居住地  职业 详细地址 身高 体重 手机号 微信号 陌陌号  出生日期
+                this.detail_form.traveler_native = result.traveler_native
+                this.detail_form.sex = result.sex == '01' ?'男' :'女'
+                this.detail_form.juzhudi = result.province +  result.city
+                // 判断职业
+                // '职业类别 0其他 1学生 2都市白领 3导游 4自由职业
+                let  _profession = '';
+                switch(result.profession_type){
+                    case 0:
+                        _profession = '其他';
+                        break;
+                    case 1:
+                        _profession = '学生';
+                        break;
+                    case 2:
+                        _profession = '都市白领';
+                        break;
+                    case 3:
+                        _profession = '导游';
+                        break;
+                    case 4:
+                        _profession = '自由职业';
+                        break;
                 }
-            }).catch(err=>{})
+                // 如果是导游或者学生则显示 最后那块的图片 否则不显示
+                if(result.profession_type == 1 || result.profession_type == 3){
+                  this.is_student_guider = true
+                }else{
+                  this.is_student_guider = false
+                }
+
+                this.detail_form.profession = _profession
+                this.detail_form.address = result.address
+                this.detail_form.tall = result.tall + 'cm'
+                this.detail_form.weight = result.weight + 'kg'
+                this.detail_form.phone  = result.phone
+                this.detail_form.webchat = result.webchat
+                this.detail_form.momo = result.momo
+                this.detail_form.birthday = result.birthday
+                // 身份证号
+                this.detail_form.identity_no = result.identity_no
+                this.detail_form.idcard_back_url = result.idcard_back_url
+                this.detail_form.idcard_front_url = result.idcard_front_url
+                //  职业证类型 （根据类型判名称）
+                this.detail_form.profession_no = result.profession_no,
+                this.detail_form.profession_name = result.profession_type == 3 ? '导游证':'学生证'
+                this.detail_form.profession_photo_url = result.profession_photo_url
+
+                // 大图预览
+                this.idcard_back_url_srcList.push(result.idcard_back_url),
+                this.idcard_front_url_srcList.push(result.idcard_front_url)
+                this.profession_photo_url_srcList.push(result.profession_photo_url)
+
+                // 贝壳分成
+                this.detail_form.virtual_rate = result.virtual_rate
+                // 出行分成
+                this.detail_form.account_rate = result.account_rate
+                this.detail_loading = false
+            }
+          }).catch(err=>{})
         },
         // 审核 操作
         handle_check(row){
