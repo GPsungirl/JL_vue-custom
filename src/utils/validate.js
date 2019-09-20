@@ -54,3 +54,11 @@ export function validNum15(val){
   return (val >= 0 && val <= 15)
 
 }
+
+/**
+ * 过滤银行卡号中间的空格
+ */
+export function filterSpace(val){
+  let sstr = val.replace(/\s*/g, '')
+  return sstr;
+}

@@ -473,7 +473,7 @@
 <script>
 import provinces from '../../utils/area.js'
 import commonUrl from '../../utils/common'
-import {isvalidPhone, validNum100, validNum15, validDyNum} from '../../utils/validate'
+import {isvalidPhone, validNum100, validNum15, validDyNum, filterSpace} from '../../utils/validate'
 export default {
     name: 'agentCheck',
     data(){
@@ -1424,6 +1424,8 @@ export default {
 
             // 校验
             if(this.m_valid_addForm('add_form') && this.m_valid_addForm('add_bank_form')){
+              // 过滤银行账户的空格
+              this.add_form_bank.account_no = filterSpace(this.add_form_bank.account_no)
                 let param = {
                     data:{
                         // 公参
