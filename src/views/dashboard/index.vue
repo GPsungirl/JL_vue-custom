@@ -167,7 +167,7 @@ export default {
                 result.agentAccountEarnings.amount / 100 + "元";
             }
           }else{
-            setTimeout(()=>{this.m_message(res1.data.msg, "warning");},1)
+            // setTimeout(()=>{this.m_message(res1.data.msg, "warning");},1)
           }
           console.log(res2);
           // 上月收益
@@ -177,7 +177,7 @@ export default {
             this.lastMonth_accountamount = result.account_month_total / 100 + '元'
 
           }else{
-             setTimeout(()=>{this.m_message(res2.data.msg, "warning");},1)
+            //  setTimeout(()=>{this.m_message(res2.data.msg, "warning");},1)
           }
 
           loading.close();
