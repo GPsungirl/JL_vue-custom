@@ -98,7 +98,7 @@
                     fixed="left"
                     width="100px" >
                 </el-table-column>
-                <el-table-column prop="name" label="姓名" width="60px">
+                <el-table-column prop="name" label="姓名" width="70px">
                 </el-table-column>
                 <el-table-column prop="up_customid" label="上级ID" width="">
                 </el-table-column>
@@ -140,7 +140,7 @@
                         {{ scope.row.province + scope.row.city }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="" label="状态" width="60px">
+                <el-table-column prop="" label="状态" width="65px">
                     <template slot-scope="scope">
                         <span v-if="scope.row.traveler_status == 0">待审核</span>
                         <span v-else-if="scope.row.traveler_status == 1">可用</span>
@@ -167,6 +167,7 @@
                 </el-table-column>
                 <!-- 操作 -->
                 <el-table-column
+                    class="table_handle"
                     prop=""
                     label="操作"
                     fixed="right"
@@ -182,6 +183,9 @@
                         <!-- 设置/取消校园代表 1否2是  只有兼职人员才可以设置/取消-->
                         <el-button v-if="scope.row.campus_agent == 1 && scope.row.traveler_type == 1 && roleId !=10" @click="handle_campus_agent(scope.row)" type="text" size="small">设置校园代表</el-button>
                         <el-button v-if="scope.row.campus_agent == 2 && scope.row.traveler_type == 1 && roleId !=10" @click="handle_campus_agent(scope.row)" type="text" size="small">取消校园代表</el-button>
+                        <!-- 向导与咨询互转 2全职向导人员 3咨询人员-->
+                        <el-button v-if="scope.row.traveler_type == 2" @click="handle_transformTraveler_type(scope.row)" type="text" size="small">转为咨询</el-button>
+                        <el-button v-if="scope.row.traveler_type == 3" @click="handle_transformTraveler_type(scope.row)" type="text" size="small">转为向导</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -948,6 +952,7 @@ export default {
 
             })
         },
+
         // 获取主列表
         getTableDataList(pageNum){
             let param = {
@@ -975,7 +980,8 @@ export default {
             this.tableLoading = true
             this.$http.post(`${ commonUrl.baseUrl }/travelerInfo/selectAllTravelerInfoList`, param).then(res=>{
                 if(res.data.code == '0000'){
-
+                    // console.log(res)
+                    // debugger
                     this.tableData = res.data.data.agentList
                     // 分页总数
                     this.pageTotal = res.data.data.page.pageTotal;
@@ -986,6 +992,51 @@ export default {
             })
         },
 
+        // 向导与咨询职业互转 2全职向导 3咨询
+        handle_transformTraveler_type(row){
+          // console.log(row)
+          // debugger
+          let confirmText = []
+
+
+          if(row.traveler_type == 2){
+            confirmText = ['请确认是否转换为旅游咨询?']
+          }else{
+            confirmText = ['请确认是否转换为向导', '转换之后咨询人员需要在客户端申请成为向导?']
+          }
+          const newDatas = []
+          const h = this.$createElement
+          for (const i in confirmText) {
+              newDatas.push(h('p', null, confirmText[i]))
+          }
+          let param = {
+              data:{
+                travelerid:row.travelerid,
+                customid:row.customid,
+                traveler_type:row.traveler_type
+              }
+          }
+          this.$confirm('转换职业类型', {
+              title: '转换职业类型',
+              message: h('div', null, newDatas),
+              showCancelButton: true,
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'success',
+              size: 'mini',
+              center: true
+          }).then(() => {
+            this.$http.post(`${ commonUrl.baseUrl }/travelerInfo/updateType`, param).then(res=>{
+                if(res.data.code == '0000'){
+                    this.m_message(res.data.msg, 'success');
+                    // 刷新
+                    this.handle_refresh()
+                }else{
+                    this.m_message(res.data.msg, 'warning');
+                }
+            }).catch(err=>{})
+          })
+        },
         // 调整分成 操作
         handle_check(row){
 
@@ -1553,5 +1604,8 @@ export default {
     .modi_rate .el-form-item{
         display:flex;
         justify-content:center;
+    }
+    .cell .el-button--small,.cell .el-button--small.is-round{
+      padding:1px 0px;
     }
 </style>

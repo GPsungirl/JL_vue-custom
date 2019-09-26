@@ -1,21 +1,21 @@
-<template>    
+<template>
     <!-- 贝壳收益 页面 -->
     <div class="pad_5">
-        <!-- M1 查询区域 -->          
+        <!-- M1 查询区域 -->
         <div class="query_fields pad_b_no handle_timerange">
             <el-form :inline="true" :model="queryForm" ref="queryForm" size="mini" class="demo-form-inline">
                 <!-- 收益类型 -->
                 <el-form-item label="收益类型" prop="virtual_class" label-width="68px">
                     <el-select v-model="queryForm.virtual_class" placeholder="请选择收益类型">
-                    <el-option 
+                    <el-option
                         v-for="(item, index) of queryForm.virtual_classs"
                         :key="index"
                         :label="item.value"
                         :value="item.id"
                         >
                     </el-option>
-                    </el-select>                
-                </el-form-item>  
+                    </el-select>
+                </el-form-item>
                 <!-- 所属市级机构 -->
                 <!-- <el-form-item label="所属市级机构" prop="city_agent_name" label-width="100px">
                     <el-input v-model="queryForm.city_agent_name" placeholder="请输入所属市级机构" class="wid_140"></el-input>
@@ -23,18 +23,18 @@
                 <!-- 向导ID -->
                 <el-form-item label="向导ID" prop="customid" label-width="68px">
                     <el-input v-model="queryForm.customid" placeholder="请输入向导ID" class="wid_140"></el-input>
-                </el-form-item>  
+                </el-form-item>
                 <!-- 入账状态 -->
                 <el-form-item label="入账状态" prop="virtual_profit_cityagent_status" label-width="68px">
                     <el-select v-model="queryForm.virtual_profit_cityagent_status" placeholder="请选择入账状态">
-                    <el-option 
+                    <el-option
                         v-for="(item, index) of queryForm.virtual_profit_cityagent_statuss"
                         :key="index"
                         :label="item.value"
                         :value="item.id"
                         >
                     </el-option>
-                    </el-select>                
+                    </el-select>
                 </el-form-item>
                 <!-- 出行时间 -->
                 <el-form-item label="收益时间" prop="allTime">
@@ -46,26 +46,26 @@
                         start-placeholder="开始时间"
                         end-placeholder="结束时间">
                     </el-date-picker>
-                </el-form-item>                                   
+                </el-form-item>
                 <!-- 查询 -->
                 <el-form-item>
-                    <el-button type="primary" size='mini' @click="queryData">查询</el-button>                  
-                    <el-button type="success" size='mini' @click="resetData('queryForm')">重置</el-button>                  
-                    <el-button type="primary" size='mini' @click="handle_refresh">刷新</el-button>                  
+                    <el-button type="primary" size='mini' @click="queryData">查询</el-button>
+                    <el-button type="success" size='mini' @click="resetData('queryForm')">重置</el-button>
+                    <el-button type="primary" size='mini' @click="handle_refresh">刷新</el-button>
                     <el-button type="primary" size='mini' @click="exportData">导出数据</el-button>
-                    
+
                 </el-form-item>
             </el-form>
         </div>
         <!-- M2 主列表 -->
-        <div>               
-            <!-- 表格 -->                       
+        <div>
+            <!-- 表格 -->
             <el-table :data="tableData" v-loading="tableLoading" border stripe style="width: 100%">
                 <el-table-column prop="" label="收益类型" width="" >
                     <!-- 收益类型1礼物 2红包 -->
-                    <template slot-scope="scope">                                    
-                        <span v-if="scope.row.virtual_class == 1">礼物</span>                                
-                        <span v-else-if="scope.row.virtual_class == 2">红包</span>                                
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.virtual_class == 1">礼物</span>
+                        <span v-else-if="scope.row.virtual_class == 2">红包</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="virtual_name" label="订单信息" width="">
@@ -82,7 +82,7 @@
                 </el-table-column>
                 <!-- 所属机构是区机构 -->
                 <el-table-column v-if="roleId != 10" prop="area_agent_name" label="所属机构" width="">
-                </el-table-column>                
+                </el-table-column>
                 <el-table-column prop="up_custom_name" label="所属上级" width="">
                 </el-table-column>
                 <el-table-column prop="upAmount" label="上级分成" width="50px">
@@ -105,7 +105,7 @@
                 <!-- virtual_profit_cityagent_status 入账状态-->
                 <!-- 1入账完成 2入账失败 3待入账 4入帐中 5作废 -->
                 <!-- <el-table-column prop="virtual_profit_cityagent_status" show-overflow-tooltip label="入账状态" width="">
-                    <template slot-scope="scope">                        
+                    <template slot-scope="scope">
                         <span v-if="scope.row.virtual_profit_cityagent_status == 1">入账完成</span>
                         <span v-else-if="scope.row.virtual_profit_cityagent_status == 2">入账失败</span>
                         <span v-else-if="scope.row.virtual_profit_cityagent_status == 3">待入账</span>
@@ -113,20 +113,20 @@
                         <span v-else-if="scope.row.virtual_profit_cityagent_status == 5">作废</span>
                     </template>
                 </el-table-column> -->
-                
+
             </el-table>
             <!-- 分页 -->
-            <div class="block mar_t10">  
-                <el-pagination                
+            <div class="block mar_t10">
+                <el-pagination
                 @current-change="handleCurrentChange"
                 :current-page="currentPage"
-                :total="pageTotal"                      
+                :total="pageTotal"
                 background
                 layout="total, prev, pager, next, jumper"
                 >
                 </el-pagination>
             </div>
-        </div>        
+        </div>
     </div>
 </template>
 <script>
@@ -135,12 +135,12 @@ import commonUrl from '../../utils/common';
 export default {
     name: 'virtualProfit',
     data(){
-        return {     
-            roleId:'',      
+        return {
+            roleId:'',
             // 主列表
             tableLoading:false,
             tableData:[],
-            // 分页          
+            // 分页
             pageTotal: 100,
             currentPage:1,
             // 查询参数
@@ -192,15 +192,15 @@ export default {
                     }
                 ],
                 virtual_profit_cityagent_status:'',
-            },                        
+            },
         }
     },
     created(){
         this.roleId = this.$store.getters.roleId
         // 初始化主列表
-        this.getTabelDataList(1)    
+        this.getTabelDataList(1)
     },
-    methods:{   
+    methods:{
         // 初始化主列表
         getTabelDataList(pageNum){
             // 参数
@@ -211,7 +211,7 @@ export default {
                     signInRoleId: this.$store.getters.roleId,
                     pageNum: pageNum,
                     pageSize: 10,
-                    // 私有                       
+                    // 私有
                     // 收益类型
                     virtual_class:this.queryForm.virtual_class,
                     // 所属市级机构
@@ -228,19 +228,19 @@ export default {
                     virtual_profit_cityagent_status:this.queryForm.virtual_profit_cityagent_status,
                 }
             }
-            this.tableLoading = true               
+            this.tableLoading = true
             this.$http.post(`${ commonUrl.baseUrl }/virtualProfit/selectVirtualProfit`, param).then(res=>{
                 // console.log(res)
                 // debugger
-                if(res.data.code == '0000'){  
+                if(res.data.code == '0000'){
 
                     // console.log(res)
                     // debugger
-                    
-                    this.tableData =  res.data.data.virtualProfitList  
+
+                    this.tableData =  res.data.data.virtualProfitList
                     // 分页 总数
                     this.pageTotal = res.data.data.page.pageTotal;
-                    // 关闭加载  
+                    // 关闭加载
                     this.tableLoading = false
                 }
             }).catch(err=>{})
@@ -257,8 +257,8 @@ export default {
                     // 公有
                     signInUserId: this.$store.getters.userId,
                     signInRoleId: this.$store.getters.roleId,
-                    
-                    // 私有                       
+
+                    // 私有
                     // 收益类型
                     virtual_class:this.queryForm.virtual_class,
                     // 所属市级机构
@@ -273,7 +273,7 @@ export default {
                     endTime:this.queryForm.endTime,
                 }
             }
-                                                
+
             this.$http.post(`${ commonUrl.baseUrl}/virtualProfit/exportVirtualProfit`, param).then(res=>{
                 if(res.data.code == '0000'){
                     this.m_message(res.data.msg, 'success')
@@ -283,13 +283,13 @@ export default {
         },
         // 查询按钮
         queryData(){
-            
+
             if(this.queryForm.allTime.length > 0){
                 // 修正 开始 和结束 时间
                 this.queryForm.startTime = this.queryForm.allTime[0]
                 this.queryForm.endTime = this.queryForm.allTime[1]
-            }            
-            
+            }
+
             this.getTabelDataList(1);
         },
         // 重置按钮
@@ -298,10 +298,10 @@ export default {
             // 对于queryForm 下拉
             this.queryForm.startTime = ''
             this.queryForm.endTime = ''
-        },                      
+        },
         // 分页
         handleCurrentChange(val){
-             this.currentPage = val       
+             this.currentPage = val
             // 获取单前页数据列表
             this.getTabelDataList(val);
             //console.log(`当前页: ${val}`);
@@ -313,7 +313,7 @@ export default {
                 type
             })
         },
-        
+
     }
 }
 </script>

@@ -230,3 +230,8 @@ body .el-table colgroup.gutter {
   margin-left:4px;
   font-size:12px;
 }
+/* 列表 的操作列 */
+.el-button--small,
+.el-button--small.is-round{
+  /* padding:2px 15px ; */
+}
