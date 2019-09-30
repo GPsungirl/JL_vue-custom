@@ -100,6 +100,9 @@
                 </el-table-column>
                 <el-table-column prop="name" label="姓名" width="70px">
                 </el-table-column>
+                <!-- 注册时间 createtime-->
+                <el-table-column prop="createtime" label="注册时间" :show-overflow-tooltip="true" width="">
+                </el-table-column>
                 <el-table-column prop="up_customid" label="上级ID" width="">
                 </el-table-column>
                 <el-table-column prop="" label="上级姓名" width="">

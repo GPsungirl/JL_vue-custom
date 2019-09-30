@@ -26,7 +26,7 @@
             </el-form-item>
             <!--  -->
             <!-- 入账状态 -->
-            <el-form-item label="入账状态" prop="virtual_profit_cityagent_status" label-width="68px">
+            <!-- <el-form-item label="入账状态" prop="virtual_profit_cityagent_status" label-width="68px">
                 <el-select v-model="queryForm.virtual_profit_cityagent_status" placeholder="请选择入账状态">
                 <el-option
                     v-for="(item, index) of queryForm.virtual_profit_cityagent_statuss"
@@ -36,7 +36,7 @@
                     >
                 </el-option>
                 </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <!-- 出行时间 -->
             <el-form-item label="收益时间" prop="allTime">
                 <el-date-picker
@@ -221,8 +221,8 @@ export default {
                     // 私有
                     // 收益类型
                     account_class:this.queryForm.account_class,
-                    // 所属市级机构
-                    city_agent_name:this.queryForm.city_agent_name,
+                    // // 所属市级机构
+                    // city_agent_name:this.queryForm.city_agent_name,
                     // 向导ID
                     customid:this.queryForm.customid,
                     // 出行项目

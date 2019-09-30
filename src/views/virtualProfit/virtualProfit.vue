@@ -100,7 +100,7 @@
                 </el-table-column> -->
                 <!-- <el-table-column prop="platAmount" label="平台收益" width="">
                 </el-table-column> -->
-                <el-table-column prop="createtime" show-overflow-tooltip label="获得时间" width="">
+                <el-table-column prop="createtime" show-overflow-tooltip label="订单时间" width="">
                 </el-table-column>
                 <!-- virtual_profit_cityagent_status 入账状态-->
                 <!-- 1入账完成 2入账失败 3待入账 4入帐中 5作废 -->
