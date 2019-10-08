@@ -47,6 +47,10 @@
             <el-form-item label="上级ID" prop="up_customid" label-width="68px">
                 <el-input v-model="queryForm.up_customid" placeholder="请输入上级ID" class="wid_140"></el-input>
             </el-form-item>
+            <!-- 向导ID -->
+            <el-form-item label="向导ID" prop="customid" label-width="">
+                <el-input v-model="queryForm.customid" placeholder="请输入向导ID" class="wid_140"></el-input>
+            </el-form-item>
             <!-- 所属机构 -->
             <!-- <el-form-item label="所属机构" prop="agent_name">
                 <el-input v-model="queryForm.agent_name" placeholder="请输入所属机构" class="wid_140"></el-input>
@@ -439,21 +443,22 @@ export default {
             bankInfo:'',
             // 查询参数
             queryForm: {
-                // 初始化 省 regions  市 cities
-                regions:'',
-                cities: [],
+              // 初始化 省 regions  市 cities
+              regions:'',
+              cities: [],
 
-                live_month:'',
-                province_code: '',
-                city_code:'',
-                province_param:'',
-                city_param: '',
+              live_month:'',
+              province_code: '',
+              city_code:'',
+              province_param:'',
+              city_param: '',
 
-                name:'',
-                up_name:'',
-                up_customid:'',
-                agent_name:'',
-
+              name:'',
+              up_name:'',
+              up_customid:'',
+              agent_name:'',
+              // 向导ID
+              customid:'',
             },
             // 详情数据
             detail_form:{
@@ -567,7 +572,8 @@ export default {
                     live_month:this.queryForm.live_month,
                     up_customid:this.queryForm.up_customid,
                     up_name:this.queryForm.up_name,
-
+                    // 向导ID
+                    customid:this.queryForm.customid,
                     province_code:this.queryForm.province_code,
                     city_code:this.queryForm.city_code,
 

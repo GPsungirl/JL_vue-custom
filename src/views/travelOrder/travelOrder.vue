@@ -11,6 +11,10 @@
             <el-form-item label="用户ID" prop="customid" label-width="68px">
                 <el-input v-model="queryForm.customid" placeholder="请输入用户ID" class="wid_140"></el-input>
             </el-form-item>
+            <!-- 向导姓名 -->
+            <el-form-item label="向导姓名" prop="name">
+              <el-input v-model="queryForm.name" placeholder="请输入向导姓名" class="wid_140"></el-input>
+            </el-form-item>
             <!-- 向导ID -->
             <el-form-item label="向导ID" prop="traveler_customid" label-width="68px">
                 <el-input v-model="queryForm.traveler_customid" placeholder="请输入向导ID" class="wid_140"></el-input>
@@ -74,12 +78,12 @@
                 </el-table-column>
                 <el-table-column prop="traveler_customid" label="向导ID" width="80px">
                 </el-table-column>
-                <el-table-column prop="traveler_custom_nickname" label="向导昵称" width="78px">
+                <el-table-column prop="name" label="向导姓名" width="78px">
                 </el-table-column>
                 <!-- 区代理不显示 所属机构 -->
-                <el-table-column v-if="roleId != 10" prop="agentName" label="所属机构" width="">
+                <el-table-column v-if="roleId != 10" prop="agentName" :show-overflow-tooltip="true" label="所属机构" width="">
                 </el-table-column>
-                <el-table-column prop="travel_time" label="出行日期" width="">
+                <el-table-column prop="travel_time" label="出行日期" :show-overflow-tooltip="true" width="">
                 </el-table-column>
                 <!--订单状态 0下单 1订单完成 2待支付 3支付成功 4订单确认 5订单取消 6订单取消已退款 7订单 -->
                 <el-table-column prop="" label="订单状态" width="">
@@ -96,7 +100,7 @@
                 </el-table-column>
                 <el-table-column prop="custom_evaluate" show-overflow-tooltip label="对用户评价" width="">
                 </el-table-column>
-                
+
             </el-table>
             <!-- 分页 -->
             <div class="block mar_t10">
@@ -130,6 +134,8 @@ export default {
           queryForm: {
               // 机构名称
               agentName:'',
+              // 向导姓名
+              name:'',
               // 用户ID
               customid:'',
               // 记录 开始和结束时间的数组
@@ -186,6 +192,8 @@ export default {
                     customid:this.queryForm.customid,
                     // 向导ID
                     traveler_customid:this.queryForm.traveler_customid,
+                    // 向导姓名
+                    name:this.queryForm.name,
                     // 出行项目
                     travel_projects:this.queryForm.travel_projects,
                     // 出行开始时间

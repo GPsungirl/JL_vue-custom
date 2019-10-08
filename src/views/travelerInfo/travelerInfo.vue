@@ -54,6 +54,10 @@
                         </el-form-item>
                     </el-col>
                 </el-form-item> -->
+                <!-- 向导ID -->
+                <el-form-item label="向导ID" prop="customid" label-width="">
+                  <el-input v-model="queryForm.customid" placeholder="请输入向导ID" class="wid_140"></el-input>
+                </el-form-item>
                 <!-- 向导姓名 -->
                 <el-form-item label="向导姓名" prop="name">
                     <el-input v-model="queryForm.name" placeholder="请输入向导姓名" class="wid_140"></el-input>
@@ -706,7 +710,8 @@ export default {
                 // 上级姓名 上级id
                 up_customid:'',
                 up_name:'',
-
+                // 向导id
+                customid:'',
                 province_param:'',//作为收集参数
                 city_param: '',   //作为收集参数
 
@@ -972,7 +977,8 @@ export default {
                     traveler_status:this.queryForm.traveler_status,
                     up_customid:this.queryForm.up_customid,
                     up_name:this.queryForm.up_name,
-
+                    // 向导id
+                    customid:this.queryForm.customid,
                     province_code:this.queryForm.province_code,
                     city_code:this.queryForm.city_code,
                     // 校园代理
