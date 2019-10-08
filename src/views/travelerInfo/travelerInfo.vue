@@ -983,8 +983,8 @@ export default {
             this.tableLoading = true
             this.$http.post(`${ commonUrl.baseUrl }/travelerInfo/selectAllTravelerInfoList`, param).then(res=>{
                 if(res.data.code == '0000'){
-                    // console.log(res)
-                    // debugger
+                    console.log(res)
+                    debugger
                     this.tableData = res.data.data.agentList
                     // 分页总数
                     this.pageTotal = res.data.data.page.pageTotal;
