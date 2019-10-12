@@ -1,59 +1,11 @@
+<!-- 下属向导查询 页面 subTravelerInfo-->
 <template>
-    <!-- 向导管理>>向导查询 -->
+
     <div class="pad_5">
         <!-- M1 查询区域 -->
         <div class="query_fields pad_b_no">
             <el-form :inline="true" :model="queryForm" ref="queryForm" size="mini" class="demo-form-inline">
-                <!-- 所属机构 -->
-                <!-- ******区代理 不需要所属机构 现居住地查询 -->
-                <el-form-item v-if="roleId != 10" label="所属机构" prop="agent_name" >
-                    <el-input v-model="queryForm.agent_name"  placeholder="请输入所属机构" class="wid_140"></el-input>
-                </el-form-item>
-                <!-- 校园代理 -->
-                <el-form-item label="校园代理" label-width="68px" prop="campus_agent">
-                    <el-select v-model="queryForm.campus_agent"
-                        class="wid_140"
-                        placeholder="选选择校园代理"
-                        >
-                        <el-option v-for="(item, index) in queryForm.campus_agents"
-                            :key="index"
-                            :label=" item.txt "
-                            :value=" item.id ">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <!-- 现居住地 -->
-                <!-- ******区代理 不需要所属机构 现居住地查询 -->
-                <!-- <el-form-item v-if="roleId != 10" label="现居住地" >
-                    <el-col :span="12">
-                        <el-form-item prop="province_code">
-                            <el-select v-model="queryForm.province_code"
-                                placeholder="选择省"
-                                class="wid_140"
-                                @change="changeOption_province($event)">
-                                <el-option v-for="(item, index) in queryForm.regions"
-                                    :key="index"
-                                    :label=" item.province "
-                                    :value=" item.adcode ">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item prop="city_code">
-                            <el-select v-model="queryForm.city_code"
-                                placeholder="选择市"
-                                class="wid_140"
-                                @change="changeOption_city($event)">
-                                <el-option v-for="(item, index) in queryForm.cities"
-                                    :key="index"
-                                    :label=" item.city "
-                                    :value=" item.adcode ">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                </el-form-item> -->
+
                 <!-- 向导ID -->
                 <el-form-item label="向导ID" prop="customid" label-width="">
                   <el-input v-model="queryForm.customid" placeholder="请输入向导ID" class="wid_140"></el-input>
@@ -74,14 +26,6 @@
                             :value=" item.id ">
                         </el-option>
                     </el-select>
-                </el-form-item>
-                <!-- 上级姓名 -->
-                <el-form-item label="上级姓名" prop="up_name">
-                    <el-input v-model="queryForm.up_name" placeholder="请输入上级姓名" class="wid_140"></el-input>
-                </el-form-item>
-                <!-- 上级ID -->
-                <el-form-item label="上级ID" prop="up_customid" label-width="68px">
-                    <el-input v-model="queryForm.up_customid" placeholder="请输入上级ID" class="wid_140"></el-input>
                 </el-form-item>
 
                 <!-- 查询 -->
@@ -105,15 +49,8 @@
                 <el-table-column prop="name" label="姓名" width="70px">
                 </el-table-column>
                 <!-- 注册时间 createtime-->
-                <el-table-column prop="createtime" label="注册时间" :show-overflow-tooltip="true" width="">
-                </el-table-column>
-                <el-table-column prop="up_customid" label="上级ID" width="">
-                </el-table-column>
-                <el-table-column prop="" label="上级姓名" width="">
-                    <template slot-scope="scope">
-                        <el-button @click="handle_up_name(scope.row)" type="text" size="small">{{ scope.row.up_name }}</el-button>
-                    </template>
-                </el-table-column>
+                <!-- <el-table-column prop="createtime" label="注册时间" :show-overflow-tooltip="true" width="">
+                </el-table-column> -->
                 <el-table-column prop="" label="性别" width="50px">
                     <template slot-scope="scope">
                         <span v-if="scope.row.sex == '01'">男</span>
@@ -155,46 +92,7 @@
                         <span v-else-if="scope.row.traveler_status == 3">不可用</span>
                     </template>
                 </el-table-column>
-                <!-- 校园代表 -->
-                <el-table-column prop="" label="校园代表" width="">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.campus_agent == 1">否</span>
-                        <span v-else-if="scope.row.campus_agent == 2">是</span>
-                    </template>
-                </el-table-column>
-                <!-- 向导类别 -->
-                <el-table-column prop="" label="向导类别" width="">
-                    <template slot-scope="scope">
-                         <!-- 0申请人员 1兼职向导人员 2全职向导人员 3咨询人员 -->
-                        <!-- <span v-if="scope.row.traveler_type == 0">申请人员</span>     -->
-                        <span v-if="scope.row.traveler_type == 1">兼职向导</span>
-                        <span v-else-if="scope.row.traveler_type == 2">全职向导</span>
-                        <span v-else-if="scope.row.traveler_type == 3">咨询人员</span>
-                    </template>
-                </el-table-column>
-                <!-- 操作 -->
-                <el-table-column
-                    class="table_handle"
-                    prop=""
-                    label="操作"
-                    fixed="right"
-                    :width="handle_width">
-                    <template slot-scope="scope">
-                        <el-button @click="handle_detail(scope.row)" type="text" size="small">详情</el-button>
-                        <!-- *****区代理10 干掉调整分成 设置校园代理 冻结 -->
-                        <el-button v-if="roleId != 10" @click="handle_check(scope.row)" type="text" size="small">调整分成</el-button>
 
-                        <!-- 1是可用状态；3是不可用状态 -->
-                        <el-button v-if="scope.row.traveler_status == 1 && roleId !=10" @click="handle_frozen(scope.row)" type="text" size="small">冻结</el-button>
-                        <el-button v-if="scope.row.traveler_status == 3 && roleId !=10" @click="handle_frozen(scope.row)" type="text" size="small">解冻</el-button>
-                        <!-- 设置/取消校园代表 1否2是  只有兼职人员才可以设置/取消-->
-                        <el-button v-if="scope.row.campus_agent == 1 && scope.row.traveler_type == 1 && roleId !=10" @click="handle_campus_agent(scope.row)" type="text" size="small">设置校园代表</el-button>
-                        <el-button v-if="scope.row.campus_agent == 2 && scope.row.traveler_type == 1 && roleId !=10" @click="handle_campus_agent(scope.row)" type="text" size="small">取消校园代表</el-button>
-                        <!-- 向导与咨询互转 2全职向导人员 3咨询人员-->
-                        <el-button v-if="scope.row.traveler_type == 2" @click="handle_transformTraveler_type(scope.row)" type="text" size="small">转为咨询</el-button>
-                        <el-button v-if="scope.row.traveler_type == 3" @click="handle_transformTraveler_type(scope.row)" type="text" size="small">转为向导</el-button>
-                    </template>
-                </el-table-column>
             </el-table>
             <!-- 分页 -->
             <div class="block mar_t10">
@@ -610,7 +508,7 @@ import commonUrl from '../../utils/common'
 import {isvalidPhone, validNum100, validNum15, validDyNum} from '../../utils/validate'
 
 export default {
-    name: 'travelerInfo',
+    name: 'subTravelerInfo',
     data(){
         // 校验分成
         let validRate=(val,value,callback)=>{
@@ -1618,3 +1516,5 @@ export default {
       padding:1px 0px;
     }
 </style>
+
+

@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginFormRules" class="login-form valid_form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">代理商管理平台</h3>
+        <h3 class="title">向导管理平台</h3>
       </div>
 
       <el-form-item prop="username">
@@ -52,13 +52,17 @@ import commonUrl from '../../utils/common';
 import { URLSearchParams } from 'url';
 import qs from 'qs';
 import { setToken } from '../../utils/auth.js';
+import store from '../../store'
+import router, {
+  resetRouter
+} from '../../router'
 export default {
   name: 'Login',
   data() {
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: '100008',
+        password: '123456'
       },
       loginFormRules:{
         username:[
@@ -101,29 +105,34 @@ export default {
           password:this.$md5(this.loginForm.password),
         }
         this.loading = true
+        console.log(param)
         const res = await this.$http.post(`${commonUrl.baseUrl}/web/login`, qs.stringify(param));
+        console.log(res);
+
+        debugger
         if(res.data.code == '0000'){
           console.log(res)
-          // 存roleId
-          this.$store.commit('user/SET_ROLEID', res.data.data.sysRole.id)
-          localStorage.setItem('pp_roleId',JSON.stringify(res.data.data.sysRole.id))
 
-          // 存 招商中心编号 merchant_center_code
-          this.$store.commit('user/SET_MERCHANT_CENTER_CODE', res.data.data.user.merchant_center_code)
-          localStorage.setItem('pp_merchant_center_code',JSON.stringify(res.data.data.user.merchant_center_code))
-          // 存roles  String:   res.data.data.sysRole.role_name
-          //this.$store.commit('user/SET_ROLES', ['admin']) // 早期先写固定值，让后端写下，roles: ['admin']
-          // 存 token
-          // const authorization = res.headers.authorization;  //令牌
-          // this.$store.commit('user/SET_TOKEN', authorization) //请求用户信息
-          // setToken(authorization) // 存到cookie里面
+          // cun
+          // 存name customid
+          store.commit('user/SET_REALNAME', res.data.data.traveler.name)
+          localStorage.setItem('pp_real_name',res.data.data.traveler.name)
+          store.commit('user/SET_USERID', res.data.data.traveler.customid)
+          localStorage.setItem('pp_userId',res.data.data.traveler.customid)
+          // 1写死token 2存roles 3存用户信息
+          // token
+          let authorization = 'token'
+          store.commit('user/SET_TOKEN', authorization)
+          setToken(authorization) // 存到cookie里面
+          // roles
+          store.commit('user/SET_ROLES', ['admin'])
+          localStorage.setItem('roles',JSON.stringify(['admin']))
+          // 用户信息
+          store.commit('user/SET_NAME', 'editor')
+          store.commit('user/SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif') //头像
+          const accessRoutes = await store.dispatch('permission/generateRoutes', []) // 为什么是数组呢？只有数组才能实现递归
+          router.addRoutes(accessRoutes)
 
-          // 存 userId
-          this.$store.commit('user/SET_USERID', res.data.data.user.id)
-          localStorage.setItem('pp_userId',JSON.stringify(res.data.data.user.id))
-          // 存 real_name
-          this.$store.commit('user/SET_REALNAME', res.data.data.user.real_name)
-          localStorage.setItem('pp_real_name',JSON.stringify(res.data.data.user.real_name))
 
           this.loading = false
           this.$router.push({path: '/'}) //这里 这么写 ？

@@ -107,41 +107,15 @@ const mutations = {
 }
 const fya_routerMap = {
   Layout: () => import('@/layout/index'),
-  // 招商中心管理  merchantCenter
-  merchantAgent: () => import('@/views/merchantAgent/merchantAgent'), //招商中心机构管理
-  merchantUser: () => import('@/views/merchantUser/merchantUser'), // 招商中心人员管理
-  merchantCenterCheck: () => import('@/views/merchantCenterCheck/merchantCenterCheck'), //招商中心审核
-  allMerchantCenter:  () => import('@/views/allMerchantCenter/allMerchantCenter'), //招行中心详情
 
-  // 区域业务管理   region
-  manageArea: () => import('@/views/manageArea/manageArea'), //业务人员管理
-  agentAccount: () => import('@/views/agentAccount/agentAccount'), //上传机构发票
-  manageAreaAgent: () => import('@/views/manageAreaAgent/manageAreaAgent'), //区域机构管理
-  // 机构管理      mechanism
-  agentCheck: () => import('@/views/agentCheck/agentCheck'), //成员管理
-  agentDetails: () => import('@/views/agentDetails/agentDetails'), //机构详情
-  subordinateAgent: () => import('@/views/subordinateAgent/subordinateAgent'), // 机构下属查询
-  travelerCheck: () => import('@/views/travelerCheck/travelerCheck'), // 角落向导审核
-
-  // 财务管理       finance
+  // 收益查询       finance
   virtualProfit: () => import('@/views/virtualProfit/virtualProfit'), //贝壳收益
-  accountProfit: () => import('@/views/accountProfit/accountProfit'), // 其他收益
-  proceedsCash: () => import('@/views/proceedsCash/proceedsCash'), // 收益提现
-  agentAccountExamine: () => import('@/views/agentAccountExamine/agentAccountExamine'), //机构受益划拨审核
-  agentAccountRecord: () => import('@/views/agentAccountRecord/agentAccountRecord'), //机构受益划拨记录
-  // 向导管理       guide
-  travelerInfo: () => import('@/views/travelerInfo/travelerInfo'), //向导查询,
-  travelRecord: () => import('@/views/travelRecord/travelRecord'), // 工作记录
-  travelOrder: () => import('@/views/travelOrder/travelOrder'), // 出行记录
-  videoExamine: () => import('@/views/videoExamine/videoExamine'), // 录制视频审核
-  videoChoice: () => import('@/views/videoChoice/videoChoice'), // 工作间视频设置
-  // 客户管理     customer
-  customInfo: () => import('@/views/customInfo/customInfo'), //用户查询
-  consumeOrderUnion: () => import('@/views/consumeOrderUnion/consumeOrderUnion'), //消费记录
-  customOrder: () => import('@/views/customOrder/customOrder'), //出行记录
-  // 系统设置     system
-  sysRole: () => import('@/views/sysRole/sysRole'), // 角色管理
-  sysUser: () => import('@/views/sysUser/sysUser'), // 用户管理
+  accountProfit: () => import('@/views/accountProfit/accountProfit'), // 出行收益
+  // 下属管理       sub
+  subTravelerInfo: () => import('@/views/subTravelerInfo/subTravelerInfo'),// 下属向导查询
+
+  subVirtualProfit: () => import('@/views/subVirtualProfit/subVirtualProfit'),// 下属贝壳收益
+  subAccountProfit: () => import('@/views/subAccountProfit/subAccountProfit'),// 下属出行收益
 
 }
 
@@ -155,28 +129,88 @@ function generateAsyncRouter(routerMap, serverRouterMap) {
   return serverRouterMap;
 }
 const actions = {
-  // generateRoutes({ commit }, roles) {
-  //   return new Promise(resolve => {
-  //     let accessedRoutes
-  //     if (roles.includes('admin')) {
-  //       accessedRoutes = asyncRoutes || []
-  //     } else {
-  //       accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-  //     }
-  //     commit('SET_ROUTES', accessedRoutes)
-  //     resolve(accessedRoutes)
-  //   })
-  // }
+
   generateRoutes({
     commit
   }, list) {
     return new Promise(resolve => {
 
-      const fya_list = setServeMap(list)
-      const gp_list = modifyKeys(fya_list)
-
-
-      // 测试 后台 传来的 路由表
+      // const fya_list = setServeMap(list)
+      // const gp_list = modifyKeys(fya_list)
+      // 固定路由表
+      let gp_list = [
+        {
+          alwaysShow: true,
+          component: 'Layout',
+          menu_name:'收益查询',
+          meta:{
+            icon:'finance',
+            title:'收益查询'
+          },
+          path:'/finance',
+          children:[
+            {
+              component:'virtualProfit',
+              menu_name:'贝壳收益',
+              meta:{
+                title:'贝壳收益'
+              },
+              name:'virtualProfit',
+              path:'virtualProfit'
+            },
+            {
+              component:'accountProfit',
+              menu_name:'出行收益',
+              meta:{
+                title:'出行收益'
+              },
+              name:'accountProfit',
+              path:'accountProfit'
+            }
+          ],
+        },
+        {
+          alwaysShow: true,
+          component: 'Layout',
+          menu_name:'下属管理',
+          meta:{
+            icon:'region',
+            title:'下属管理'
+          },
+          path:'/region',
+          children:[
+            {
+              component:'subTravelerInfo',
+              menu_name:'下属向导查询',
+              meta:{
+                title:'下属向导查询'
+              },
+              name:'subTravelerInfo',
+              path:'subTravelerInfo'
+            },
+            {
+              component:'subVirtualProfit',
+              menu_name:'下属贝壳收益',
+              meta:{
+                title:'下属贝壳收益'
+              },
+              name:'subVirtualProfit',
+              path:'subVirtualProfit'
+            },
+            {
+              component:'subAccountProfit',
+              menu_name:'下属出行收益',
+              meta:{
+                title:'下属出行收益'
+              },
+              name:'subAccountProfit',
+              path:'subAccountProfit'
+            }
+          ],
+        }
+      ]
+      console.log(gp_list)
+      // 用本地 写死的路由表
       const asyncRouterMap = generateAsyncRouter(fya_routerMap, gp_list)
       asyncRouterMap.push({
         path: '*',

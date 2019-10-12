@@ -11,21 +11,14 @@ import { setToken } from './auth';
 const service = axios.create({
   baseURL: '', // baseurl为什么是''呢？看我下面的解释
   // withCredentials: true,
-  
-  timeout: 200000
+
+  // timeout: 200000
 })
 
 // 请求拦截
 service.interceptors.request.use(
   config => {
-    // console.log('hello, this is requrst before.')
-    // console.log(config)
-    // if (store.getters.token) {
-    // let each request carry token
-    // ['X-Token'] is a custom headers key
-    // please modify it according to the actual situation
-    // config.headers['X-Token'] = getToken()
-    // config.headers.Authorization = getToken() 123 456
+
     config.headers['Authorization'] = getToken()
     // }
     return config
@@ -41,9 +34,9 @@ service.interceptors.response.use(
   response => {
 
     if (response.data.code === '0000') {
-      const authorization = response.headers.authorization;  //令牌
-      store.commit('user/SET_TOKEN', authorization) //请求用户信息
-      setToken(authorization) // 存到cookie里面
+      // const authorization = response.headers.authorization;  //令牌
+      // store.commit('user/SET_TOKEN', authorization) //请求用户信息
+      // setToken(authorization) // 存到cookie里面
       return response
     } else if (response.data.code == 2000 || response.data.message == 'Token已过期') {  // token 过期处理
       // 目前后端的 token过期 直接以接口错误的方式 抛出来了，所以这里接收不到了。。无奈
