@@ -78,6 +78,7 @@ import commonUrl from '../../utils/common';
 export default {
   data(){
     return{
+      customid:localStorage.getItem('pp_userId'),
       modi_dialogVisible:false,
       modi_loading:false,
       modi_form:{
@@ -123,7 +124,9 @@ export default {
 
     // 重置查询条件
     resetData(formName){
+      if(this.$refs[formName]){
         this.$refs[formName].resetFields();
+      }
     },
     // 保存密码修改
     save_modi(){
@@ -134,16 +137,19 @@ export default {
           let param = {
             data:{
               // 公参
-              signInUserId: this.$store.getters.userId,
-              signInRoleId: this.$store.getters.roleId,
+              username:this.customid,
               // 私参
-              oldPassword:this.$md5(this.modi_form.oldPassword),
-              newPassword:this.$md5(this.modi_form.newPassword),
+              oldpassword:this.$md5(this.modi_form.oldPassword),
+              newpassword:this.$md5(this.modi_form.newPassword),
             }
           }
           this.modi_loading = true
-          this.$http.post(`${ commonUrl.baseUrl }/sysUser/updatePassword`, param).then(res=>{
+          this.$http.post(`${ commonUrl.baseUrl }/traveler/updatePassWord`, param).then(res=>{
             if(res.data.code == '0000'){
+              // console.log(res)
+
+              
+              // debugger
               this.modi_loading = false
               this.m_message(res.data.msg, 'success')
               this.resetData('modi_form')

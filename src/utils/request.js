@@ -34,9 +34,12 @@ service.interceptors.response.use(
   response => {
 
     if (response.data.code === '0000') {
-      // const authorization = response.headers.authorization;  //令牌
-      // store.commit('user/SET_TOKEN', authorization) //请求用户信息
-      // setToken(authorization) // 存到cookie里面
+
+      const authorization = 'jiade'; //response.config.headers.Authorization || response.headers.authorization ; // ''
+      console.log(authorization)
+      debugger
+      store.commit('user/SET_TOKEN', authorization) //请求用户信息
+      setToken(authorization) // 存到cookie里面
       return response
     } else if (response.data.code == 2000 || response.data.message == 'Token已过期') {  // token 过期处理
       // 目前后端的 token过期 直接以接口错误的方式 抛出来了，所以这里接收不到了。。无奈
@@ -64,32 +67,33 @@ service.interceptors.response.use(
     } else {
       return response;
     }
+    return response;
   },
   error => {//目前的token过期 以接口错误的时候 抛出来了，这里拦截
 
-    if(error.response.data.code == 2000){
+    // if(error.response.data.code == 2000){
 
-      Message.MessageBox.alert('登录超时请重新登录', '确定登出', {
-        confirmButtonText: '重新登录',
-        center:true,
-        type: 'warning'
-      }).then(() => {
+    //   Message.MessageBox.alert('登录超时请重新登录', '确定登出', {
+    //     confirmButtonText: '重新登录',
+    //     center:true,
+    //     type: 'warning'
+    //   }).then(() => {
 
-        localStorage.removeItem('pp_userId')
-        localStorage.removeItem('pp_merchant_center_code')
-        store.commit('user/SET_TOKEN', '')
-        store.commit('user/SET_ROLES', [])
-        store.commit('user/SET_USERID', '')
-        store.commit('user/SET_AVATAR', '')
-        store.commit('user/SET_NAME', '')
-        store.commit('user/SET_MERCHANT_CENTER_CODE','')
-        // Message.error('token过期')
-        removeToken()
-        resetRouter()
-        router.push(`/login`)
-        //location.reload()
-      })
-    }
+    //     localStorage.removeItem('pp_userId')
+    //     localStorage.removeItem('pp_merchant_center_code')
+    //     store.commit('user/SET_TOKEN', '')
+    //     store.commit('user/SET_ROLES', [])
+    //     store.commit('user/SET_USERID', '')
+    //     store.commit('user/SET_AVATAR', '')
+    //     store.commit('user/SET_NAME', '')
+    //     store.commit('user/SET_MERCHANT_CENTER_CODE','')
+    //     // Message.error('token过期')
+    //     removeToken()
+    //     resetRouter()
+    //     router.push(`/login`)
+    //     //location.reload()
+    //   })
+    // }
     // console.error('假如你能在控制台看到此话，代表跟我配合的那个后端：1、网断了2、接口异常了3、屏幕黑了')
     return Promise.reject(error)
   }

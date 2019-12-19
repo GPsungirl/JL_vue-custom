@@ -16,27 +16,16 @@
                     </el-option>
                     </el-select>
                 </el-form-item>
-                <!-- 向导ID -->
-                <el-form-item label="用户ID" prop="customid" label-width="68px">
-                    <el-input v-model="queryForm.customid" placeholder="请输入向导ID" class="wid_140"></el-input>
+                <!-- 用户ID virtualSourceCustomid-->
+                <el-form-item label="用户ID" prop="virtualSourceCustomid" label-width="68px">
+                    <el-input v-model="queryForm.virtualSourceCustomid" placeholder="请输入用户ID" class="wid_140"></el-input>
                 </el-form-item>
-                <!-- 向导姓名 -->
-                <el-form-item label="用户昵称" prop="custom_name" label-width="68px">
-                  <el-input v-model="queryForm.custom_name" placeholder="请输入向导姓名" class="wid_140"></el-input>
+                <!-- 用户昵称 -->
+                <el-form-item label="用户昵称" prop="nickName" label-width="68px">
+                  <el-input v-model="queryForm.nickName" placeholder="请输入用户昵称" class="wid_140"></el-input>
                 </el-form-item>
 
-                <!-- 入账状态 -->
-                <el-form-item label="入账状态" prop="virtual_profit_cityagent_status" label-width="68px">
-                    <el-select v-model="queryForm.virtual_profit_cityagent_status" placeholder="请选择入账状态" class="wid_140">
-                    <el-option
-                        v-for="(item, index) of queryForm.virtual_profit_cityagent_statuss"
-                        :key="index"
-                        :label="item.value"
-                        :value="item.id"
-                        >
-                    </el-option>
-                    </el-select>
-                </el-form-item>
+
                 <!-- 出行时间 -->
                 <el-form-item label="收益时间" prop="allTime">
                     <el-date-picker
@@ -70,31 +59,21 @@
                 </el-table-column>
                 <el-table-column prop="virtual_name" label="订单信息" width="">
                 </el-table-column>
-                <el-table-column prop="giftPrice" label="礼物单价(贝壳)" width="">
+                <el-table-column prop="virtual_gift_price" label="礼物单价(贝壳)" width="">
                 </el-table-column>
                 <el-table-column prop="virtual_gift_num" label="礼物数量" width="">
                 </el-table-column>
                 <el-table-column prop="totalPrice" label="总价(贝壳)" width="">
                 </el-table-column>
-                <el-table-column prop="customid" label="用户ID" width="">
+                <el-table-column prop="virtualSourceCustomid" label="用户ID" width="">
                 </el-table-column>
-                <el-table-column prop="custom_name" label="用户昵称" width="">
+                <el-table-column prop="nickname" label="用户昵称" width="">
                 </el-table-column>
-                <el-table-column prop="platAmount" label="自身收益" width="">
+                <el-table-column prop="customAmount" label="自身收益" width="">
                 </el-table-column>
                 <el-table-column prop="createtime" show-overflow-tooltip label="订单时间" width="">
                 </el-table-column>
-                <!-- virtual_profit_cityagent_status 入账状态-->
-                <!-- 1入账完成 2入账失败 3待入账 4入帐中 5作废 -->
-                <el-table-column prop="virtual_profit_cityagent_status" show-overflow-tooltip label="入账状态" width="">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.virtual_profit_cityagent_status == 1">入账完成</span>
-                        <span v-else-if="scope.row.virtual_profit_cityagent_status == 2">入账失败</span>
-                        <span v-else-if="scope.row.virtual_profit_cityagent_status == 3">待入账</span>
-                        <span v-else-if="scope.row.virtual_profit_cityagent_status == 4">入帐中</span>
-                        <span v-else-if="scope.row.virtual_profit_cityagent_status == 5">作废</span>
-                    </template>
-                </el-table-column>
+
             </el-table>
             <!-- 分页 -->
             <div class="block mar_t10">
@@ -117,8 +96,8 @@ export default {
     name: 'virtualProfit',
     data(){
         return {
-            roleId:'',
-            name:localStorage.getItem('pp_real_name'),
+
+            //name:localStorage.getItem('pp_real_name'),
             customid:localStorage.getItem('pp_userId'),
             // 主列表
             tableLoading:false,
@@ -140,52 +119,24 @@ export default {
                 ],
                 // 收益类型
                 virtual_class:'',
-                // 所属市级机构
-                area_agent_name:'',
-                // 向导id
-                customid:'',
-                // 向导姓名
-                custom_name:'',
-                // 上级id
-                up_customid:'',
-                // 上级姓名
-                up_custom_name:'',
+
+                // 用户ID
+                virtualSourceCustomid:'',
+                // 用户昵称
+                nickName:'',
+
                 // 所有时间
                 allTime:'',
                 // 结束时间
                 endTime:'',
                 // 开始时间
                 startTime:'',
-                // 入账状态
-                // 1入账完成 2入账失败 3待入账 4入帐中 5作废
-                virtual_profit_cityagent_statuss:[
-                    {
-                        id:1,
-                        value:'入账完成'
-                    },
-                    {
-                        id:2,
-                        value:'入账失败'
-                    },
-                    {
-                        id:3,
-                        value:'待入账'
-                    },
-                    {
-                        id:4,
-                        value:'入帐中'
-                    },
-                    {
-                        id:5,
-                        value:'作废'
-                    }
-                ],
-                virtual_profit_cityagent_status:'',
+
             },
         }
     },
     created(){
-        // this.roleId = this.$store.getters.roleId
+
         // 初始化主列表
         this.getTabelDataList(1)
     },
@@ -196,42 +147,32 @@ export default {
             let param = {
                 data: {
                     // 公有
-                    signInUserId: this.$store.getters.userId,
-                    signInRoleId: this.$store.getters.roleId,
+                    customid: this.customid,
                     pageNum: pageNum,
                     pageSize: 10,
                     // 私有
                     // 收益类型
                     virtual_class:this.queryForm.virtual_class,
-                    // 所属市级机构
-                    area_agent_name:this.queryForm.area_agent_name,
-                    // 上级ID
-                    up_customid:this.queryForm.up_customid,
-                    // 上级姓名
-                    up_custom_name:this.queryForm.up_custom_name,
 
-                    // 向导姓名
-                    custom_name:this.queryForm.custom_name,
-                    // 收益来源ID(向导ID)
-                    customid:this.queryForm.customid,
-                    // 出行项目
-                    travel_projects:this.queryForm.travel_projects,
+                    // 用户昵称
+                    nickName:this.queryForm.nickName,
+                    // 用户ID
+                    virtualSourceCustomid:this.queryForm.virtualSourceCustomid,
+
                     // 出行开始时间
                     startTime:this.queryForm.startTime,
                     // 出行结束时间
                     endTime:this.queryForm.endTime,
-                    // 入账状态
-                    virtual_profit_cityagent_status:this.queryForm.virtual_profit_cityagent_status,
+
                 }
             }
             this.tableLoading = true
             this.$http.post(`${ commonUrl.baseUrl }/virtualProfit/selectVirtualProfit`, param).then(res=>{
-                // console.log(res)
-                // debugger
+
                 if(res.data.code == '0000'){
 
-                    // console.log(res)
-                    // debugger
+                    console.log(res)
+                    debugger
 
                     this.tableData =  res.data.data.virtualProfitList
                     // 分页 总数

@@ -61,8 +61,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: '100008',
-        password: '123456'
+        username: '',
+        password: ''
       },
       loginFormRules:{
         username:[
@@ -105,25 +105,21 @@ export default {
           password:this.$md5(this.loginForm.password),
         }
         this.loading = true
-        console.log(param)
         const res = await this.$http.post(`${commonUrl.baseUrl}/web/login`, qs.stringify(param));
-        console.log(res);
-
-        debugger
         if(res.data.code == '0000'){
           console.log(res)
 
           // cun
           // 存name customid
-          store.commit('user/SET_REALNAME', res.data.data.traveler.name)
-          localStorage.setItem('pp_real_name',res.data.data.traveler.name)
-          store.commit('user/SET_USERID', res.data.data.traveler.customid)
-          localStorage.setItem('pp_userId',res.data.data.traveler.customid)
+          store.commit('user/SET_REALNAME', res.data.data.traveler.name) //res.data.data.traveler.name
+          localStorage.setItem('pp_real_name',res.data.data.traveler.name) //res.data.data.traveler.name
+          store.commit('user/SET_USERID', res.data.data.traveler.customid) //res.data.data.traveler.customid
+          localStorage.setItem('pp_userId',res.data.data.traveler.customid) //res.data.data.traveler.customid
           // 1写死token 2存roles 3存用户信息
           // token
-          let authorization = 'token'
-          store.commit('user/SET_TOKEN', authorization)
-          setToken(authorization) // 存到cookie里面
+          // let authorization = 'token'
+          // store.commit('user/SET_TOKEN', authorization)
+          // setToken(authorization) // 存到cookie里面
           // roles
           store.commit('user/SET_ROLES', ['admin'])
           localStorage.setItem('roles',JSON.stringify(['admin']))
@@ -133,7 +129,7 @@ export default {
           const accessRoutes = await store.dispatch('permission/generateRoutes', []) // 为什么是数组呢？只有数组才能实现递归
           router.addRoutes(accessRoutes)
 
-
+          //setToken('login_ok')
           this.loading = false
           this.$router.push({path: '/'}) //这里 这么写 ？
         } else {
